@@ -51,15 +51,26 @@ file(GLOB_RECURSE cmsis_core_file
 
 get_filename_component(cmsis_core_file_path ${cmsis_core_file} DIRECTORY)
 
+file(GLOB_RECURSE stm32_conf_file  
+    ${stm32_libraries_root_dir}/**/stm32f10x_conf.h
+)
+list(FILTER stm32_conf_file INCLUDE REGEX ".*Template.*")
+get_filename_component(stm32_conf_file_path ${stm32_conf_file} DIRECTORY)
+
 file(GLOB sources 
     ${stm32_sources_path}/*.c 
     ${stm32_includes_path}/*.h 
     ${stm32_startup_file}
     ${cmsis_core_file}
+    ${stm32_conf_file}
+    ${stm32_device_support_sources}
 )
 
+
 string(TOUPPER ${device_class} device_class_uppercased)
-add_definitions(-DSTM32F10X_${device_class_uppercased})
+add_definitions(-DSTM32F10X_${device_class_uppercased} -DUSE_STDPERIPH_DRIVER)
+
+message(${sources})
 
 add_library(stm32 ${sources})
 
@@ -67,6 +78,7 @@ target_include_directories(stm32 PUBLIC
     ${stm32_device_support_path}
     ${stm32_includes_path}
     ${cmsis_core_file_path}
+    ${stm32_conf_file_path}
 )
 
 target_compile_options(stm32 PRIVATE
