@@ -66,11 +66,8 @@ file(GLOB sources
     ${stm32_device_support_sources}
 )
 
-
 string(TOUPPER ${device_class} device_class_uppercased)
 add_definitions(-DSTM32F10X_${device_class_uppercased} -DUSE_STDPERIPH_DRIVER)
-
-message(${sources})
 
 add_library(stm32 ${sources})
 
