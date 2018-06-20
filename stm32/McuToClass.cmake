@@ -1,0 +1,7 @@
+function(mcu_to_class mcu device_class)
+    if (${mcu} STREQUAL "STM32F103C8T6")
+        set(${device_class} "md" PARENT_SCOPE)
+    else ()
+        message(FATAL_ERROR "Can't determine class for MCU: ${mcu}")
+    endif ()
+endfunction()
