@@ -45,6 +45,13 @@ find_program(arm_cxx_objdump
         ${binary_paths} 
 )
 
+find_program(arm_eabi_size 
+    NAMES 
+        "arm-none-eabi-size" 
+    PATHS
+        ${binary_paths} 
+)
+
 message ("-- ARM ASM compiler: ${arm_c_compiler}")
 message ("-- ARM C compiler: ${arm_c_compiler}")
 message ("-- ARM CXX compiler: ${arm_cxx_compiler}")
