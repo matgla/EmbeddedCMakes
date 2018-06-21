@@ -1,3 +1,5 @@
+cmake_minimum_required(VERSION 3.9)
+
 if (DEFINED $ENV{STM32_LIBRARIES_ROOT_DIR})
     file(TO_CMAKE_PATH $ENV{STM32_LIBRARIES_ROOT_DIR} stm32_libraries_root_dir_converted)
     set(stm32_libraries_root_dir ${stm32_library_root_dir_converted})
@@ -91,4 +93,4 @@ target_compile_options(stm32 PRIVATE
 )
 
 set_target_properties(stm32 PROPERTIES LINK_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,--gc-sections")
-
+set_property(TARGET stm32 PROPERTY INTERPROCEDURAL_OPTIMIZATION true)
