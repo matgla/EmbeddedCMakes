@@ -20,8 +20,8 @@ if (NOT EXISTS "${stm32_startup_file}")
     message(FATAL_ERROR "Can't find gcc_ride7/startup_stm32f10x_${device_class}.s under: ${stm32_libraries_root_dir}")
 endif ()
 
-file(GLOB_RECURSE stm32_some_sources_files ${stm32_libraries_root_dir}/**/misc.c)
-file(GLOB_RECURSE stm32_some_includes_files ${stm32_libraries_root_dir}/**/misc.h)
+file(GLOB_RECURSE stm32_some_sources_files ${stm32_libraries_root_dir}/**/stm32f10x_adc.c)
+file(GLOB_RECURSE stm32_some_includes_files ${stm32_libraries_root_dir}/**/stm32f10x_adc.h)
 
 if (NOT EXISTS "${stm32_some_sources_files}")
     message(FATAL_ERROR "Can't find sources")
@@ -40,7 +40,7 @@ file(GLOB_RECURSE stm32_device_support_sources
     ${stm32_libraries_root_dir}/**/system_stm32f10x.c
 )
 
-list(FILTER stm32_device_support_sources INCLUDE REGEX ".*DeviceSupport.*")
+list(FILTER stm32_device_support_sources INCLUDE REGEX ".*DeviceSupport.*STM32F10x.*")
 list(GET stm32_device_support_sources 0 device_support_element)
 
 get_filename_component(stm32_device_support_path ${device_support_element} DIRECTORY)
@@ -54,7 +54,7 @@ get_filename_component(cmsis_core_file_path ${cmsis_core_file} DIRECTORY)
 file(GLOB_RECURSE stm32_conf_file  
     ${stm32_libraries_root_dir}/**/stm32f10x_conf.h
 )
-list(FILTER stm32_conf_file INCLUDE REGEX ".*Template.*")
+list(FILTER stm32_conf_file INCLUDE REGEX ".*STM32F10x.*Template.*")
 get_filename_component(stm32_conf_file_path ${stm32_conf_file} DIRECTORY)
 
 file(GLOB sources 
