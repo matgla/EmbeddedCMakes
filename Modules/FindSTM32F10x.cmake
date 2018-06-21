@@ -86,7 +86,7 @@ target_compile_options(stm32 PRIVATE
     -ffunction-sections
     $<$<COMPILE_LANGUAGE:C>:-std=gnu99>
     $<$<COMPILE_LANGUAGE:CXX>:-std=c++1z -fno-rtti -fno-use-cxa-atexit -fno-exceptions -fno-threadsafe-statics>
-    $<$<CONFIG:DEBUG>:-Og>
+    $<$<CONFIG:DEBUG>:-Og -g>
     $<$<CONFIG:RELEASE>:-Os>
 )
 
