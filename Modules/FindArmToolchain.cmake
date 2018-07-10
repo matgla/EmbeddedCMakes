@@ -70,3 +70,11 @@ set(CMAKE_C_FLAGS "-mthumb -mcpu=cortex-m3 -mfloat-abi=soft " CACHE INTERNAL "c 
 set(CMAKE_CXX_FLAGS "-mthumb -mcpu=cortex-m3 -mfloat-abi=soft" CACHE INTERNAL "cxx compiler flags")
 set(CMAKE_ASM_FLAGS "-mthumb -mcpu=cortex-m3 -mfloat-abi=soft" CACHE INTERNAL "asm compiler flags")
 set(CMAKE_EXE_LINKER_FLAGS "-nostartfiles -mthumb -mcpu=cortex-m3 -T${linker_script} --specs=nano.specs" CACHE INTERNAL "linker flags")
+
+find_package(PackageHandleStandardArgs)
+find_package_handle_standard_args(ArmToolchain DEFAULT_MSG
+    arm_c_compiler
+    arm_cxx_compiler
+    arm_cxx_objcopy
+    arm_cxx_objdump
+)
