@@ -81,16 +81,14 @@ target_include_directories(stm32 PUBLIC
 )
 
 target_compile_options(stm32 PRIVATE
-    -Wno-implicit-function-declaration
-    -fno-builtin
-    -fdata-sections
-    -fdata-sections 
-    -ffunction-sections
     $<$<COMPILE_LANGUAGE:C>:-std=gnu99>
-    $<$<COMPILE_LANGUAGE:CXX>:-std=c++1z -fno-rtti -fno-use-cxa-atexit -fno-exceptions -fno-threadsafe-statics>
+    $<$<COMPILE_LANGUAGE:CXX>:-std=c++1z>
     $<$<CONFIG:DEBUG>:-Og -g>
     $<$<CONFIG:RELEASE>:-Os>
 )
+
+include(../AddTargetCompileOptions.cmake)
+add_target_compile_options(stm32)
 
 set_target_properties(stm32 PROPERTIES LINK_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,--gc-sections")
 set_property(TARGET stm32 PROPERTY INTERPROCEDURAL_OPTIMIZATION true)
