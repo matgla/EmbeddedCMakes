@@ -87,7 +87,8 @@ target_compile_options(stm32 PRIVATE
     $<$<CONFIG:RELEASE>:-Os>
 )
 
-include(../AddTargetCompileOptions.cmake)
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
+include(cmake/AddTargetCompileOptions.cmake)
 add_target_compile_options(stm32)
 
 set_target_properties(stm32 PROPERTIES LINK_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,--gc-sections")
