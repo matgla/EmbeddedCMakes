@@ -1,83 +1,76 @@
 cmake_minimum_required(VERSION 3.9)
 
-if (DEFINED $ENV{STM32_LIBRARIES_ROOT_DIR})
-    file(TO_CMAKE_PATH $ENV{STM32_LIBRARIES_ROOT_DIR} stm32_libraries_root_dir_converted)
-    set(stm32_libraries_root_dir ${stm32_library_root_dir_converted})
-elseif (DEFINED STM32_LIBRARIES_PATH)
+if (DEFINED STM32_LIBRARIES_PATH)
     set(stm32_libraries_root_dir ${STM32_LIBRARIES_PATH})
 endif()
 
 if (stm32_libraries_root_dir)
-    message("-- STM32 Libraries path: ${stm32_libraries_root_dir}")
+    message(STATUS "STM32 Libraries path: ${stm32_libraries_root_dir}")
 else ()
     message(FATAL_ERROR "STM32 Libraries can't be found. Please set environment variable: STM32_LIBRARIES_ROOT_DIR or pass path to cmake with -DSTM32_LIBRARIES_PATH")
 endif ()
 
-file(GLOB_RECURSE stm32_startup_file ${stm32_libraries_root_dir}/**/startup_stm32f10x_${device_class}.s)
+string(TOLOWER "${mcu}" mcu)
+
+string(REGEX MATCH "stm32f10..."
+    mcu_startup_filename ${mcu})
+
+string(REGEX MATCH ".$"
+    mcu_version ${mcu})
+
+string(REGEX MATCH "stm32f10."
+    mcu_startup_filename ${mcu_startup_filename})
+
+string(TOUPPER "${mcu_startup_filename}" mcu_prefix_uppercased)
+
+string (TOUPPER "${mcu_version}" mcu_version_uppercased)
+
+set(mcu_definition "${mcu_prefix_uppercased}x${mcu_version_uppercased}")
+add_definitions("-D${mcu_definition}")
+message(STATUS "Added compilation definition: -D${mcu_definition}")
+
+set(mcu_startup_filename "startup_${mcu_startup_filename}x${mcu_version}.s")
+
+file(GLOB_RECURSE stm32_startup_file ${stm32_libraries_root_dir}/**/${mcu_startup_filename})
 
 # only gcc version currently supported
-list(FILTER stm32_startup_file INCLUDE REGEX ".*gcc_ride.*")
+list(FILTER stm32_startup_file INCLUDE REGEX ".*gcc.*")
 
 if (NOT EXISTS "${stm32_startup_file}")
-    message(FATAL_ERROR "Can't find gcc_ride7/startup_stm32f10x_${device_class}.s under: ${stm32_libraries_root_dir}")
+    message(FATAL_ERROR "Can't find gcc_ride7/${mcu_startup_filename} under: ${stm32_libraries_root_dir}")
+else ()
+    message(STATUS "Found startup script: ${stm32_startup_file}")
 endif ()
 
-file(GLOB_RECURSE stm32_some_sources_files ${stm32_libraries_root_dir}/**/stm32f10x_adc.c)
-file(GLOB_RECURSE stm32_some_includes_files ${stm32_libraries_root_dir}/**/stm32f10x_adc.h)
-
-if (NOT EXISTS "${stm32_some_sources_files}")
-    message(FATAL_ERROR "Can't find sources")
-endif ()
-
-if (NOT EXISTS "${stm32_some_includes_files}")
-    message(FATAL_ERROR "Can't find includes")
-endif ()
-
-get_filename_component(stm32_sources_path ${stm32_some_sources_files} DIRECTORY)
-get_filename_component(stm32_includes_path ${stm32_some_includes_files} DIRECTORY)
-
-file(GLOB_RECURSE stm32_device_support_sources  
-    ${stm32_libraries_root_dir}/**/stm32f10x.h
-    ${stm32_libraries_root_dir}/**/system_stm32f10x.h
-    ${stm32_libraries_root_dir}/**/system_stm32f10x.c
+file(GLOB_RECURSE stm32_device_support_sources
+    ${stm32_libraries_root_dir}/**/stm32f1xx.h
+    ${stm32_libraries_root_dir}/**/system_stm32f1xx.h
+    ${stm32_libraries_root_dir}/**/system_stm32f1xx.c
 )
 
-list(FILTER stm32_device_support_sources INCLUDE REGEX ".*DeviceSupport.*STM32F10x.*")
+list(FILTER stm32_device_support_sources INCLUDE REGEX ".*CMSIS/Device/ST.*")
+
 list(GET stm32_device_support_sources 0 device_support_element)
 
 get_filename_component(stm32_device_support_path ${device_support_element} DIRECTORY)
 
-file(GLOB_RECURSE cmsis_core_file  
+file(GLOB_RECURSE cmsis_core_file
     ${stm32_libraries_root_dir}/**/core_cm3.h
 )
 
 get_filename_component(cmsis_core_file_path ${cmsis_core_file} DIRECTORY)
 
-file(GLOB_RECURSE stm32_conf_file  
-    ${stm32_libraries_root_dir}/**/stm32f10x_conf.h
-)
-list(FILTER stm32_conf_file INCLUDE REGEX ".*STM32F10x.*Template.*")
-get_filename_component(stm32_conf_file_path ${stm32_conf_file} DIRECTORY)
-
-file(GLOB sources 
-    ${stm32_sources_path}/*.c 
-    ${stm32_includes_path}/*.h 
+file(GLOB sources
     ${stm32_startup_file}
     ${cmsis_core_file}
-    ${stm32_conf_file}
     ${stm32_device_support_sources}
 )
 
-string(TOUPPER ${device_class} device_class_uppercased)
-add_definitions(-DSTM32F10X_${device_class_uppercased} -DUSE_STDPERIPH_DRIVER)
-
 add_library(stm32 ${sources})
 
-target_include_directories(stm32 PUBLIC 
+target_include_directories(stm32 PUBLIC
     ${stm32_device_support_path}
-    ${stm32_includes_path}
     ${cmsis_core_file_path}
-    ${stm32_conf_file_path}
 )
 
 target_compile_options(stm32 PRIVATE
@@ -93,3 +86,10 @@ add_target_compile_options(stm32)
 
 set_target_properties(stm32 PROPERTIES LINK_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,--gc-sections")
 set_property(TARGET stm32 PROPERTY INTERPROCEDURAL_OPTIMIZATION true)
+
+message("${linker_script}")
+
+set(CMAKE_C_FLAGS "-mthumb -mcpu=cortex-m3 -mfloat-abi=soft -Wno-register" CACHE INTERNAL "c compiler flags")
+set(CMAKE_CXX_FLAGS "-mthumb -mcpu=cortex-m3 -mfloat-abi=soft -Wno-register" CACHE INTERNAL "cxx compiler flags")
+set(CMAKE_ASM_FLAGS "-mthumb -mcpu=cortex-m3 -mfloat-abi=soft -Wno-register" CACHE INTERNAL "asm compiler flags")
+set(CMAKE_EXE_LINKER_FLAGS "-nostartfiles -mthumb -mcpu=cortex-m3 -T${linker_script} --specs=nano.specs" CACHE INTERNAL "linker flags")
