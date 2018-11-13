@@ -87,9 +87,7 @@ add_target_compile_options(stm32)
 set_target_properties(stm32 PROPERTIES LINK_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,--gc-sections")
 set_property(TARGET stm32 PROPERTY INTERPROCEDURAL_OPTIMIZATION true)
 
-message("${linker_script}")
-
 set(CMAKE_C_FLAGS "-mthumb -mcpu=cortex-m3 -mfloat-abi=soft -Wno-register" CACHE INTERNAL "c compiler flags")
 set(CMAKE_CXX_FLAGS "-mthumb -mcpu=cortex-m3 -mfloat-abi=soft -Wno-register" CACHE INTERNAL "cxx compiler flags")
 set(CMAKE_ASM_FLAGS "-mthumb -mcpu=cortex-m3 -mfloat-abi=soft -Wno-register" CACHE INTERNAL "asm compiler flags")
-set(CMAKE_EXE_LINKER_FLAGS "-nostartfiles -mthumb -mcpu=cortex-m3 -T${linker_script} --specs=nano.specs" CACHE INTERNAL "linker flags")
+set(CMAKE_EXE_LINKER_FLAGS "-nostartfiles -mthumb -mcpu=cortex-m3 -L${linker_scripts_directory} -T${linker_script} --specs=nano.specs" CACHE INTERNAL "linker flags")
