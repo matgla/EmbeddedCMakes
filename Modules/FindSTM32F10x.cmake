@@ -80,17 +80,14 @@ file(GLOB sources
 
 add_library(stm32 ${sources})
 
+target_sources(stm32 PUBLIC ${sources})
+
 target_include_directories(stm32 PUBLIC
     ${stm32_device_support_path}
     ${cmsis_core_file_path}
 )
 
-target_compile_options(stm32 PRIVATE
-    $<$<COMPILE_LANGUAGE:C>:-std=gnu99>
-    $<$<COMPILE_LANGUAGE:CXX>:-std=c++1z>
-    $<$<CONFIG:DEBUG>:-Og -g>
-    $<$<CONFIG:RELEASE>:-Os>
-)
+
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
 include(cmake/AddTargetCompileOptions.cmake)
@@ -103,3 +100,10 @@ set(CMAKE_C_FLAGS "-mthumb -mcpu=cortex-m3 -mfloat-abi=soft" CACHE INTERNAL "c c
 set(CMAKE_CXX_FLAGS "-mthumb -mcpu=cortex-m3 -mfloat-abi=soft -Wno-register" CACHE INTERNAL "cxx compiler flags")
 set(CMAKE_ASM_FLAGS "-mthumb -mcpu=cortex-m3 -mfloat-abi=soft" CACHE INTERNAL "asm compiler flags")
 set(CMAKE_EXE_LINKER_FLAGS "-nostartfiles -mthumb -mcpu=cortex-m3 -L${linker_scripts_directory} -T${linker_script} --specs=nano.specs" CACHE INTERNAL "linker flags")
+
+target_compile_options(stm32 PRIVATE
+    $<$<COMPILE_LANGUAGE:C>:-std=gnu99>
+    $<$<COMPILE_LANGUAGE:CXX>:-std=c++1z>
+    $<$<CONFIG:DEBUG>:-Og -g>
+    $<$<CONFIG:RELEASE>:-Os>
+)
