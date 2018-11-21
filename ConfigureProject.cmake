@@ -27,7 +27,7 @@ elif()
 endif()
 
 include (${board_configuration_file})
-get_device_info(mcu mcu_family vendor arch)
+get_device_info(mcu mcu_family arch vendor)
 message(STATUS "MCU:        ${mcu}")
 message(STATUS "MCU Family: ${mcu_family}")
 message(STATUS "Vendor:     ${vendor}")
@@ -38,7 +38,10 @@ search_linker_script(${vendor} ${mcu} ${linker_scripts_directory} linker_script)
 
 ## Load SDK ##
 if (${vendor} STREQUAL "STM32")
+    message (STATUS "Loading STM32 toolchain")
     include(STM32)
+else ()
+    message(FATAL_ERROR "WHAT")
 endif()
 
 ## Export configuration ##

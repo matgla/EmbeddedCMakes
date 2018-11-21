@@ -1,6 +1,6 @@
-function(generate_binary target_name)
+function(generate_binary target_name vendor)
+    message(STATUS "Configuring binary tool ${target_name}: ${vendor}")
     if (${vendor} STREQUAL "STM32")
-        message("-- Generating ${target_name} binary for: STM32")
         include (stm32/GenerateStm32Binary)
         generate_stm32_binary(${target_name})
     endif ()
