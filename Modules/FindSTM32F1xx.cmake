@@ -40,16 +40,12 @@ string(TOUPPER "${mcu_startup_filename}" mcu_prefix_uppercased)
 string (TOUPPER "${mcu_version}" mcu_version_uppercased)
 
 set(mcu_definition "${mcu_prefix_uppercased}x${mcu_version_uppercased}")
-message(STATUS "Added compilation definition: -D${mcu_definition}")
-
-add_definitions("-D${mcu_definition}")
-
 
 # only gcc version currently supported
 list(FILTER stm32_startup_file INCLUDE REGEX ".*gcc.*")
 
 if (NOT EXISTS "${stm32_startup_file}")
-    message(FATAL_ERROR "Can't find gcc_ride7/${mcu_startup_filename} under: ${stm32_libraries_root_dir}")
+    message(FATAL_ERROR "Can't find ${mcu_startup_filename} inside: ${stm32_libraries_root_dir}")
 else ()
     message(STATUS "Found startup script: ${stm32_startup_file}")
 endif ()
@@ -78,32 +74,35 @@ file(GLOB sources
     ${stm32_device_support_sources}
 )
 
-add_library(stm32 ${sources})
+add_library(stm32)
+target_sources(stm32 PRIVATE ${sources})
 
-target_sources(stm32 PUBLIC ${sources})
+target_compile_definitions(stm32 PUBLIC "-D${mcu_definition}")
+message(STATUS "Added compilation definition: -D${mcu_definition}")
+
+target_sources(stm32 PRIVATE ${sources})
 
 target_include_directories(stm32 PUBLIC
     ${stm32_device_support_path}
     ${cmsis_core_file_path}
 )
 
-
-
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
-include(cmake/AddTargetCompileOptions.cmake)
-add_target_compile_options(stm32)
 
-set_target_properties(stm32 PROPERTIES LINK_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,--gc-sections")
 set_property(TARGET stm32 PROPERTY INTERPROCEDURAL_OPTIMIZATION true)
 
-set(CMAKE_C_FLAGS "-mthumb -mcpu=cortex-m3 -mfloat-abi=soft" CACHE INTERNAL "c compiler flags")
-set(CMAKE_CXX_FLAGS "-mthumb -mcpu=cortex-m3 -mfloat-abi=soft -Wno-register" CACHE INTERNAL "cxx compiler flags")
-set(CMAKE_ASM_FLAGS "-mthumb -mcpu=cortex-m3 -mfloat-abi=soft" CACHE INTERNAL "asm compiler flags")
-set(CMAKE_EXE_LINKER_FLAGS "-nostartfiles -mthumb -mcpu=cortex-m3 -L${linker_scripts_directory} -T${linker_script} --specs=nano.specs" CACHE INTERNAL "linker flags")
+set(CMAKE_EXE_LINKER_FLAGS "-nostartfiles -Wl,--gc-sections -mthumb -mcpu=cortex-m3 -L${linker_scripts_directory} -T${linker_script} --specs=nano.specs" CACHE INTERNAL "linker flags")
 
-target_compile_options(stm32 PRIVATE
-    $<$<COMPILE_LANGUAGE:C>:-std=gnu99>
-    $<$<COMPILE_LANGUAGE:CXX>:-std=c++1z>
+target_compile_options(stm32 PUBLIC
+    -mthumb
+    -mcpu=cortex-m3
+    -mfloat-abi=soft
+    -fno-builtin
+    -fdata-sections
+    -fdata-sections
+    -ffunction-sections
+    $<$<COMPILE_LANGUAGE:C>:-std=gnu99 -Wno-implicit-function-declaration>
+    $<$<COMPILE_LANGUAGE:CXX>:-std=c++1z -fno-rtti -fno-use-cxa-atexit -fno-exceptions -fno-threadsafe-statics -Wno-register>
     $<$<CONFIG:DEBUG>:-Og -g>
     $<$<CONFIG:RELEASE>:-Os>
 )
