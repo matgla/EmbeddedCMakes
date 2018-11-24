@@ -103,6 +103,6 @@ target_compile_options(stm32 PUBLIC
     -ffunction-sections
     $<$<COMPILE_LANGUAGE:C>:-std=gnu99 -Wno-implicit-function-declaration>
     $<$<COMPILE_LANGUAGE:CXX>:-std=c++1z -fno-rtti -fno-use-cxa-atexit -fno-exceptions -fno-threadsafe-statics -Wno-register>
-    $<$<CONFIG:DEBUG>:-Og -g>
+    $<$<CONFIG:DEBUG>:-O0 -g>
     $<$<CONFIG:RELEASE>:-Os>
 )
