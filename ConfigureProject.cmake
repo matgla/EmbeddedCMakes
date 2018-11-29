@@ -33,15 +33,16 @@ message(STATUS "MCU Family: ${mcu_family}")
 message(STATUS "Vendor:     ${vendor}")
 message(STATUS "Arch:       ${arch}")
 
-include (SearchLinkerScript)
-search_linker_script(${vendor} ${mcu} ${linker_scripts_directory} linker_script)
+
+if (${linker_script})
+    include (SearchLinkerScript)
+    search_linker_script(${vendor} ${mcu} ${linker_scripts_directory} linker_script)
+endif ()
 
 ## Load SDK ##
 if (${vendor} STREQUAL "STM32")
     message (STATUS "Loading STM32 toolchain")
     include(STM32)
-else ()
-    message(FATAL_ERROR "WHAT")
 endif()
 
 ## Export configuration ##
