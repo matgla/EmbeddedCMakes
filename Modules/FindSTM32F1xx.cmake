@@ -95,6 +95,9 @@ set(CMAKE_EXE_LINKER_FLAGS "-nostartfiles -Wl,--gc-sections -mthumb -mcpu=cortex
 
 target_compile_options(stm32 PUBLIC
     -mthumb
+    -mno-thumb-interwork
+    -mfpu=vfp
+    -mfix-cortex-m3-ldrd
     -mcpu=cortex-m3
     -mfloat-abi=soft
     -fno-builtin

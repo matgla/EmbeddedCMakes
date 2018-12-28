@@ -33,8 +33,7 @@ message(STATUS "MCU Family: ${mcu_family}")
 message(STATUS "Vendor:     ${vendor}")
 message(STATUS "Arch:       ${arch}")
 
-
-if (${linker_script})
+if (NOT ${arch} STREQUAL "x86")
     include (SearchLinkerScript)
     search_linker_script(${vendor} ${mcu} ${linker_scripts_directory} linker_script)
 endif ()
@@ -47,7 +46,11 @@ endif()
 
 ## Export configuration ##
 
-set(mcu "${mcu}" PARENT_SCOPE)
-set(arch "${arch}" PARENT_SCOPE)
-set(vendor "${vendor}" PARENT_SCOPE)
-set(linker_script "${linker_script}" PARENT_SCOPE)
+get_directory_property(has_parent PARENT_DIRECTORY)
+if (has_parent)
+    set(mcu "${mcu}" PARENT_SCOPE)
+    set(arch "${arch}" PARENT_SCOPE)
+    set(vendor "${vendor}" PARENT_SCOPE)
+    set(linker_script "${linker_script}" PARENT_SCOPE)
+endif ()
+
