@@ -33,15 +33,13 @@ function (fetch_module_with_path module_name module_path)
     if (NOT TARGET ${module_name})
         execute_process(
             COMMAND
-                git submodule update --init -- lib/${module_name}
+                git submodule update --init -- ${module_name}
             WORKING_DIRECTORY
                 ${CMAKE_CURRENT_SOURCE_DIR}
         )
 
-        add_subdirectory(${module_path})
+        if (NOT ${module_path} STREQUAL "")
+            add_subdirectory(${module_path})
+        endif ()
     endif ()
 endfunction()
-
-function (fetch_module module_name)
-    fetch_module_with_path(${module_name} ${module_name})
-endfunction ()
