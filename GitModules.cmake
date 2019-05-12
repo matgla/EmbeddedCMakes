@@ -42,6 +42,9 @@ function (fetch_module_with_path module_name module_path working_directory)
             ERROR_QUIET
         )
 
+        execute_command("git submodule foreach git checkout master" ${PROJECT_SOURCE_DIR})
+        execute_command("git submodule foreach git pull" ${PROJECT_SOURCE_DIR})
+
         if (NOT ${module_path} STREQUAL "")
             add_subdirectory(${module_path})
         endif ()
