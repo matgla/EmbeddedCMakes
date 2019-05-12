@@ -12,7 +12,7 @@ function (execute_command command_to_execute)
         COMMAND
             ${command_to_execute}
         WORKING_DIRECTORY
-            ${PROJECT_SOURCE_DIR}
+            ${CMAKE_CURRENT_SOURCE_DIR}
         OUTPUT_VARIABLE output
         ERROR_VARIABLE error
         RESULT_VARIABLE result
@@ -36,7 +36,7 @@ function (fetch_module module_name)
             COMMAND
                 git submodule update --init -- lib/${module_name}
             WORKING_DIRECTORY
-                ${PROJECT_SOURCE_DIR}
+                ${CMAKE_CURRENT_SOURCE_DIR}
         )
         add_subdirectory(${module_name})
     endif ()
