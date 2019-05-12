@@ -15,6 +15,7 @@ function (execute_command command_to_execute working_directory)
         OUTPUT_VARIABLE output
         ERROR_VARIABLE error
         RESULT_VARIABLE result
+        OUTPUT_QUIET
     )
 
     if (NOT result EQUAL "0")
@@ -36,6 +37,7 @@ function (fetch_module_with_path module_name module_path working_directory)
                 git submodule update --init -- ${module_name}
             WORKING_DIRECTORY
                 ${working_directory}
+            OUTPUT_QUIET
         )
 
         if (NOT ${module_path} STREQUAL "")
