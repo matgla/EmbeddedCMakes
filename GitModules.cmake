@@ -16,6 +16,7 @@ function (execute_command command_to_execute working_directory)
         ERROR_VARIABLE error
         RESULT_VARIABLE result
         OUTPUT_QUIET
+        ERROR_QUIET
     )
 
     if (NOT result EQUAL "0")
@@ -38,6 +39,7 @@ function (fetch_module_with_path module_name module_path working_directory)
             WORKING_DIRECTORY
                 ${working_directory}
             OUTPUT_QUIET
+            ERROR_QUIET
         )
 
         if (NOT ${module_path} STREQUAL "")
