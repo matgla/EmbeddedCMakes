@@ -2,7 +2,6 @@ if (NOT boards_path)
     message(FATAL_ERROR "Path to boards configuration CMake files must be provided via boards_path. Please set board_path variable!")
 endif()
 
-
 set (unknown "Unknown" CACHE STRING "Unknown Tag" FORCE)
 
 ##  DEDUCE TARGET ##
@@ -13,14 +12,23 @@ set(MCU_FAMILY ${unknown} CACHE STRING "Target MCU family")
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_LIST_DIR}")
 
-set(board_file_glob_expression "${boards_path}/**/${BOARD}.cmake")
+if (user_boards_path)
+    set(board_file_glob_expression "${user_boards_path}/**/${BOARD}.cmake")
+    message(STATUS "Searching board configuration: ${board_file_glob_expression}")
+    file(GLOB_RECURSE board_configuration_file "${board_file_glob_expression}")
+endif ()
 
-message(STATUS "Searching board configuration: ${board_file_glob_expression}")
-file(GLOB_RECURSE board_configuration_file "${board_file_glob_expression}")
+if (board_configuration_file)
+    message (STATUS "Found user board configuration: ${board_configuration_file}")
+else ()
+    set(board_file_glob_expression "${boards_path}/**/${BOARD}.cmake")
+    message(STATUS "Searching board configuration: ${board_file_glob_expression}")
+    file(GLOB_RECURSE board_configuration_file "${board_file_glob_expression}")
+endif ()
 
 if (NOT board_configuration_file)
-    message(FATAL_ERROR "Can't find configuration file: ${board_file_glob_expression}")
-elif()
+        message(FATAL_ERROR "Can't find configuration file: ${board_file_glob_expression}")
+else ()
     message(STATUS "Found board configuration: ${board_configuration_file}")
     set (device_configuration_file "${board_configuration_file}")
     set (device_configuration_file "${device_configuration_file}" PARENT_SCOPE)
@@ -33,7 +41,7 @@ message(STATUS "MCU Family: ${mcu_family}")
 message(STATUS "Vendor:     ${vendor}")
 message(STATUS "Arch:       ${arch}")
 
-if (NOT ${arch} STREQUAL "x86")
+if (linker_scripts_directory)
     include (SearchLinkerScript)
     search_linker_script(${vendor} ${mcu} ${linker_scripts_directory} linker_script)
 endif ()
@@ -42,6 +50,11 @@ endif ()
 if (${vendor} STREQUAL "STM32")
     message (STATUS "Loading STM32 toolchain")
     include(STM32)
+endif()
+
+if (${vendor} STREQUAL "ATMEL")
+    message (STATUS "Loading AVR toolchain")
+    include(AVR)
 endif()
 
 ## Export configuration ##
