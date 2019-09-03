@@ -7,4 +7,4 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_LIST_DIR}/Modules")
 set(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH}" PARENT_SCOPE)
 
 find_package(AvrToolchain REQUIRED)
-# find_package(${mcu_family} REQUIRED)
+find_package(${mcu_family} REQUIRED)
