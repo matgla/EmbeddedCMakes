@@ -61,9 +61,9 @@ endif()
 
 get_directory_property(has_parent PARENT_DIRECTORY)
 if (has_parent)
-    set(mcu "${mcu}" PARENT_SCOPE)
-    set(arch "${arch}" PARENT_SCOPE)
-    set(vendor "${vendor}" PARENT_SCOPE)
-    set(linker_script "${linker_script}" PARENT_SCOPE)
+    set(mcu "${mcu}" CACHE STRING "target MCU")
+    set(arch "${arch}" CACHE STRING "target architecture")
+    set(vendor "${vendor}" CACHE STRING "target vendor")
+    set(linker_script "${linker_script}" CACHE STRING "target linker script")
 endif ()
 
