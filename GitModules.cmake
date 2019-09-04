@@ -27,10 +27,12 @@ endfunction()
 
 function (fetch_module_via_tag_or_branch module_name module_path working_directory tag branch)
     message (STATUS "Update module: ${module_name}, with path: ${module_path}, inside: ${working_directory}")
+
     find_package(Git QUIET)
     if (NOT GIT_FOUND)
         message (FATAL_ERROR "Can't find git")
     endif ()
+
 
     string(FIND ${module_name} "/" module_name_last_slash REVERSE)
     string(LENGTH ${module_name} module_length)
@@ -39,6 +41,13 @@ function (fetch_module_via_tag_or_branch module_name module_path working_directo
     string(SUBSTRING ${module_name} ${target_name_begin} ${target_name_length} target_name)
 
     if (NOT TARGET ${target_name})
+        if (DEFINED ENV{NO_DEPS_UPDATE})
+            message (STATUS "Updating dependencies disabled!")
+            add_subdirectory(${module_path})
+            return()
+        endif()
+
+
         execute_process(
             COMMAND
                 git submodule update --init -- ${module_name}
