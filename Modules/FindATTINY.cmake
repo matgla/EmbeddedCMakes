@@ -12,8 +12,8 @@ add_compile_options("-mmcu=${mcu};-I${CMAKE_CURRENT_SOURCE_DIR}/lib/avr_libstdcp
 target_compile_options(avr INTERFACE
     -fdata-sections
     -ffunction-sections
-    $<$<COMPILE_LANGUAGE:C>:-std=gnu99 -Wno-implicit-function-declaration>
-    $<$<COMPILE_LANGUAGE:CXX>:-std=c++1z -fno-rtti -fno-use-cxa-atexit -fno-exceptions -fno-threadsafe-statics -Wno-register >
+    $<$<COMPILE_LANGUAGE:C>:-std=gnu99 -Wno-implicit-function-declaration -mmcu=${mcu}>
+    $<$<COMPILE_LANGUAGE:CXX>:-std=c++1z -fno-rtti -fno-use-cxa-atexit -fno-exceptions -fno-threadsafe-statics -Wno-register -mmcu=${mcu}>
     $<$<CONFIG:DEBUG>:-O0 -g>
     $<$<CONFIG:RELEASE>:-Os>
 )

@@ -55,6 +55,8 @@ endif()
 if (${vendor} STREQUAL "ATMEL")
     message (STATUS "Loading AVR toolchain")
     include(AVR)
+    include(Modules/Platform/AVR)
+    set (path_to_platform_file "Modules/Platform/AVR" CACHE INTERNAL "")
 endif()
 
 ## Export configuration ##
