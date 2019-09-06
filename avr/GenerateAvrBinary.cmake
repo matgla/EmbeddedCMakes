@@ -6,7 +6,7 @@ function(generate_avr_binary target_name)
     add_custom_target(size_t ALL
         DEPENDS size)
 
+    file(TO_CMAKE_PATH "${avr_objcpy}" OBJCPY)
+    message(STATUS "Binary(hex) command: ${target_name}.hex DEPENDS ${target_name} COMMAND ${OBJCPY} -j .text -j .data -Oihex ${target_name}.elf ${target_name}.hex")
     add_custom_target(${target_name}.hex DEPENDS ${target_name} COMMAND ${OBJCPY} -j .text -j .data -Oihex ${target_name}.elf ${target_name}.hex)
-    file(TO_CMAKE_PATH "${arm_objcpy}" OBJCPY)
-    add_custom_target(${target_name}.bin DEPENDS ${target_name} COMMAND ${OBJCPY} -j .text -j .data -Obin ${target_name}.elf ${target_name}.bin)
 endfunction()

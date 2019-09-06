@@ -6,5 +6,3 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_LIST_DIR}/Modules" C
 
 find_package(AvrToolchain REQUIRED)
 find_package(${mcu_family} REQUIRED)
-
-message("System name: ${CMAKE_SYSTEM_NAME}")
