@@ -26,20 +26,18 @@ set(mcu_startup_filename_path "startup_${mcu_startup_filename}x${mcu_version}.s"
 file(GLOB_RECURSE stm32_startup_file ${stm32_libraries_root_dir}/**/${mcu_startup_filename_path})
 
 if (NOT stm32_startup_file)
-    if ("${mcu_version}" STREQUAL "8")
-        set(mcu_version "b")
+    if ("${mcu_version}" STREQUAL "8" OR ${mcu_version} STREQUAL "b")
+        set(mcu_startup_filename_path "startup_stm32f10x_md.s")
+        set(mcu_definition "STM32F10X_MD")
     endif ()
 endif ()
 
-set(mcu_startup_filename_path "startup_${mcu_startup_filename}x${mcu_version}.s")
 
 file(GLOB_RECURSE stm32_startup_file ${stm32_libraries_root_dir}/**/${mcu_startup_filename_path})
 
 string(TOUPPER "${mcu_startup_filename}" mcu_prefix_uppercased)
 
 string (TOUPPER "${mcu_version}" mcu_version_uppercased)
-
-set(mcu_definition "${mcu_prefix_uppercased}x${mcu_version_uppercased}")
 
 # only gcc version currently supported
 list(FILTER stm32_startup_file INCLUDE REGEX ".*gcc.*")
@@ -51,13 +49,12 @@ else ()
 endif ()
 
 file(GLOB_RECURSE stm32_device_support_sources
-    ${stm32_libraries_root_dir}/**/stm32f1xx.h
-    ${stm32_libraries_root_dir}/**/system_stm32f1xx.h
-    ${stm32_libraries_root_dir}/**/system_stm32f1xx.c
+    ${stm32_libraries_root_dir}/**/stm32f10x.h
+    ${stm32_libraries_root_dir}/**/system_stm32f10x.h
+    ${stm32_libraries_root_dir}/**/system_stm32f10x.c
 )
 
-list(FILTER stm32_device_support_sources INCLUDE REGEX ".*CMSIS/Device/ST.*")
-
+list(FILTER stm32_device_support_sources INCLUDE REGEX ".*CMSIS/.*/ST.*")
 list(GET stm32_device_support_sources 0 device_support_element)
 
 get_filename_component(stm32_device_support_path ${device_support_element} DIRECTORY)
