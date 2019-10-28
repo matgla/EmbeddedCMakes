@@ -86,8 +86,6 @@ target_include_directories(stm32 PUBLIC
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
 
-set_property(TARGET stm32 PROPERTY INTERPROCEDURAL_OPTIMIZATION true)
-
 set(CMAKE_EXE_LINKER_FLAGS "-nostartfiles -Wl,--gc-sections -mthumb -mcpu=cortex-m3 -L${linker_scripts_directory} -T${linker_script} --specs=nano.specs" CACHE INTERNAL "linker flags")
 
 target_compile_options(stm32 PUBLIC
