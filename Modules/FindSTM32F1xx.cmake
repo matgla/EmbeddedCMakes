@@ -88,17 +88,10 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
 
 set(CMAKE_EXE_LINKER_FLAGS "-nostartfiles -Wl,--gc-sections -mthumb -mcpu=cortex-m3 -L${linker_scripts_directory} -T${linker_script} --specs=nano.specs" CACHE INTERNAL "linker flags")
 
+set(hal_compilation_flags "-mthumb;-mno-thumb-interwork;-mfpu=vfp;-mfix-cortex-m3-ldrd;-mcpu=cortex-m3;-mfloat-abi=soft;-fno-builtin;-fdata-sections;-ffunction-sections" CACHE INTERNAL "HAL compilation flags")
+
 target_compile_options(stm32 PUBLIC
-    -mthumb
-    -mno-thumb-interwork
-    -mfpu=vfp
-    -mfix-cortex-m3-ldrd
-    -mcpu=cortex-m3
-    -mfloat-abi=soft
-    -fno-builtin
-    -fdata-sections
-    -fdata-sections
-    -ffunction-sections
+    ${hal_compilation_flags}
     $<$<COMPILE_LANGUAGE:C>:-std=gnu99 -Wno-implicit-function-declaration>
     $<$<COMPILE_LANGUAGE:CXX>:-std=c++1z -fno-rtti -fno-use-cxa-atexit -fno-exceptions -fno-threadsafe-statics -Wno-register>
     $<$<CONFIG:DEBUG>:-O0 -g>
