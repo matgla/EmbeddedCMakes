@@ -86,12 +86,13 @@ target_include_directories(stm32 PUBLIC
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
 
-set(hal_compilation_flags "-fno-rtti;-fno-exceptions;-fno-threadsafe-statics;-mthumb;-mno-thumb-interwork;-mfpu=vfp;-mfix-cortex-m3-ldrd;-mcpu=cortex-m3;-mfloat-abi=soft;-fno-builtin;-fdata-sections;-ffunction-sections" CACHE INTERNAL "HAL compilation flags")
+set(hal_common_compilation_flags "-mthumb;-mno-thumb-interwork;-mfpu=vfp;-mfix-cortex-m3-ldrd;-mcpu=cortex-m3;-mfloat-abi=soft;-fno-builtin;-fdata-sections;-ffunction-sections")
+set(hal_cxx_compilation_flags "${hal_common_compilation_flags};-fno-rtti;-fno-exceptions;-fno-threadsafe-statics;-std=c++1z;-fno-use-cxa-atexit;-Wno-register" CACHE INTERNAL "HAL CXX compilation flags")
+set(hal_c_compilation_flags "${hal_common_compilation_flags};-std=gnu99;-Wno-implicit-function-declaration" CACHE INTERNAL "HAL C compilation flags")
 
 target_compile_options(stm32 PUBLIC
-    ${hal_compilation_flags}
-    $<$<COMPILE_LANGUAGE:C>:-std=gnu99 -Wno-implicit-function-declaration>
-    $<$<COMPILE_LANGUAGE:CXX>:-std=c++1z -fno-use-cxa-atexit -Wno-register>
+    $<$<COMPILE_LANGUAGE:C>:${hal_c_compilation_flags}>
+    $<$<COMPILE_LANGUAGE:CXX>:${hal_cxx_compilation_flags}>
     $<$<CONFIG:DEBUG>:-O0 -g>
     $<$<CONFIG:RELEASE>:-Os>
 )
@@ -102,4 +103,4 @@ target_link_options(stm32 PUBLIC
     "${hal_linker_flags};-nostartfiles;-L${linker_scripts_directory};-T${linker_script};--specs=nano.specs;-Wl,--gc-sections")
 
 
-       
+
