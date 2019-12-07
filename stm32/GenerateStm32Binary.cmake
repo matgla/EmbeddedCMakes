@@ -18,6 +18,7 @@ function(generate_stm32_binary target_name)
         TARGET ${target_name} 
         POST_BUILD
         COMMAND ${objcopy_exec} -Obinary ${target_name}.elf ${target_name}.bin
+        COMMAND cmake -E touch ${CMAKE_CURRENT_BINARY_DIR}/${target_name}_generate_bin.stamp
     )
 
 endfunction()
