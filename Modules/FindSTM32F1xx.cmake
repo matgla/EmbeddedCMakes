@@ -93,6 +93,7 @@ set(hal_c_compilation_flags "${hal_common_compilation_flags};-std=gnu99;-Wno-imp
 target_compile_options(stm32 PUBLIC
     $<$<COMPILE_LANGUAGE:C>:${hal_c_compilation_flags}>
     $<$<COMPILE_LANGUAGE:CXX>:${hal_cxx_compilation_flags}>
+    $<$<COMPILE_LANGUAGE:ASM>:${hal_c_compilation_flags}>
     $<$<CONFIG:DEBUG>:-Og -g>
     $<$<CONFIG:RELEASE>:-Os>
 )
