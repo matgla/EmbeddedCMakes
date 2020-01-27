@@ -40,7 +40,7 @@ string(TOUPPER "${mcu_startup_filename}" mcu_prefix_uppercased)
 string (TOUPPER "${mcu_version}" mcu_version_uppercased)
 
 # only gcc version currently supported
-list(FILTER stm32_startup_file INCLUDE REGEX ".*gcc.*")
+list(FILTER stm32_startup_file INCLUDE REGEX ".*TrueSTUDIO.*")
 
 if (NOT EXISTS "${stm32_startup_file}")
     message(FATAL_ERROR "Can't find ${mcu_startup_filename} inside: ${stm32_libraries_root_dir}")
@@ -86,8 +86,9 @@ target_include_directories(stm32 PUBLIC
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
 
-set(hal_common_compilation_flags "-mthumb;-mno-thumb-interwork;-mfpu=vfp;-mfix-cortex-m3-ldrd;-mcpu=cortex-m3;-mfloat-abi=soft;-fno-builtin;-fdata-sections;-ffunction-sections")
-set(hal_cxx_compilation_flags "${hal_common_compilation_flags};-fno-rtti;-fno-exceptions;-fno-threadsafe-statics;-std=c++1z;-fno-use-cxa-atexit;-Wno-register" CACHE INTERNAL "HAL CXX compilation flags")
+set(hal_common_compilation_flags
+    "-mthumb;-mno-thumb-interwork;-mfpu=vfp;-mfix-cortex-m3-ldrd;-mcpu=cortex-m3;-mfloat-abi=soft;-fno-builtin;-fdata-sections;-ffunction-sections")
+set(hal_cxx_compilation_flags "${hal_common_compilation_flags};-fno-rtti;-fno-exceptions;-fno-threadsafe-statics;-std=c++2a;-fno-use-cxa-atexit;-Wno-register" CACHE INTERNAL "HAL CXX compilation flags")
 set(hal_c_compilation_flags "${hal_common_compilation_flags};-std=gnu99;-Wno-implicit-function-declaration" CACHE INTERNAL "HAL C compilation flags")
 
 target_compile_options(stm32 PUBLIC
@@ -101,7 +102,7 @@ target_compile_options(stm32 PUBLIC
 set(hal_linker_flags "-mthumb;-mcpu=cortex-m3;-flto" CACHE INTERNAL "Linker flags")
 
 target_link_options(stm32 PUBLIC
-    "${hal_linker_flags};-nostartfiles;-L${linker_scripts_directory};-T${linker_script};--specs=nano.specs;-Wl,--gc-sections")
+    "${hal_linker_flags};-L${linker_scripts_directory};-T${linker_script};--specs=nano.specs;-Wl,--gc-sections")
 
 
 
