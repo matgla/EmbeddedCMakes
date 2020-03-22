@@ -87,8 +87,8 @@ target_include_directories(stm32 PUBLIC
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
 
 set(hal_common_compilation_flags
-    "-mthumb;-mno-thumb-interwork;-mfpu=vfp;-mfix-cortex-m3-ldrd;-mcpu=cortex-m3;-mfloat-abi=soft;-fno-builtin;-fdata-sections;-ffunction-sections")
-set(hal_cxx_compilation_flags "${hal_common_compilation_flags};-fno-rtti;-fno-exceptions;-fno-threadsafe-statics;-std=c++2a;-fno-use-cxa-atexit;-Wno-register;-fno-omit-frame-pointer;" CACHE INTERNAL "HAL CXX compilation flags")
+    "-mthumb;-mno-thumb-interwork;-mfpu=vfp;-mfix-cortex-m3-ldrd;-mcpu=cortex-m3;-mfloat-abi=soft;-fno-builtin;-fdata-sections;-ffunction-sections;")
+set(hal_cxx_compilation_flags "${hal_common_compilation_flags};-fno-rtti;-fno-exceptions;-fno-threadsafe-statics;-std=c++2a;-fno-use-cxa-atexit;-Wno-register;" CACHE INTERNAL "HAL CXX compilation flags")
 set(hal_c_compilation_flags "${hal_common_compilation_flags};-std=gnu99;-Wno-implicit-function-declaration" CACHE INTERNAL "HAL C compilation flags")
 
 target_compile_options(stm32 PUBLIC
