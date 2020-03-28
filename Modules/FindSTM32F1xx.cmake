@@ -102,7 +102,7 @@ target_compile_options(stm32 PUBLIC
 set(hal_linker_flags "-mthumb;-mcpu=cortex-m3;-flto" CACHE INTERNAL "Linker flags")
 
 target_link_options(stm32 PUBLIC
-    "${hal_linker_flags};-L${linker_scripts_directory};-T${linker_script};--specs=nano.specs;-Wl,--gc-sections")
+    "${hal_linker_flags};-L${linker_scripts_directory};-T${linker_script};--specs=nano.specs;-Wl,--gc-sections;-Wl,--wrap=_malloc_r;-Wl,--wrap=_realloc_r;-Wl,--wrap=_free_r")
 
 
 
