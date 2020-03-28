@@ -35,17 +35,16 @@ else ()
 endif()
 
 include (${board_configuration_file})
-get_linker_script(linker_script linker_scripts_directory)
+
 get_device_info(mcu mcu_family arch vendor)
 message(STATUS "MCU:        ${mcu}")
 message(STATUS "MCU Family: ${mcu_family}")
 message(STATUS "Vendor:     ${vendor}")
 message(STATUS "Arch:       ${arch}")
 
-#if (linker_scripts_directory)
-#    include (SearchLinkerScript)
-#    search_linker_script(${vendor} ${mcu} ${linker_scripts_directory} linker_script)
-#endif ()
+if (${vendor} STREQUAL "STM32")
+    get_linker_script(linker_script linker_scripts_directory)
+endif()
 
 ## Load SDK ##
 if (${vendor} STREQUAL "STM32")
