@@ -41,7 +41,7 @@ function (fetch_module_via_tag_or_branch module_name module_path working_directo
     string(SUBSTRING ${module_name} ${target_name_begin} ${target_name_length} target_name)
 
     if (NOT TARGET ${target_name})
-        if (DEFINED ENV{NO_DEPS_UPDATE})
+        if (DEFINED ENV{NO_DEPS_UPDATE} OR DEFINED NO_DEPS_UPDATE)
             message (STATUS "Updating dependencies disabled!")
             add_subdirectory(${module_path})
             return()
