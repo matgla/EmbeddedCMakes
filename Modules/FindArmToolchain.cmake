@@ -1,80 +1,59 @@
 cmake_minimum_required(VERSION 3.6)
 
-if (ARM_TOOLCHAIN_PATH)
-    set(arm_toolchain_path "${ARM_TOOLCHAIN_PATH}/bin")
-elseif (EXISTS $ENV{ARM_TOOLCHAIN})
-    file(TO_CMAKE_PATH $ENV{ARM_TOOLCHAIN} arm_toolchain_path_converted)
-    set(arm_toolchain_path "${arm_toolchain_path_converted}/bin")
-endif()
+# if (ARM_TOOLCHAIN_PATH)
+#     set(arm_toolchain_path "${ARM_TOOLCHAIN_PATH}/bin")
+# elseif (EXISTS $ENV{ARM_TOOLCHAIN})
+#     file(TO_CMAKE_PATH $ENV{ARM_TOOLCHAIN} arm_toolchain_path_converted)
+#     set(arm_toolchain_path "${arm_toolchain_path_converted}/bin")
+# endif()
 
-message(STATUS "ARM toolchain path: ${arm_toolchain_path}")
+# message(STATUS "ARM toolchain path: ${arm_toolchain_path}")
 
-if (arm_toolchain_path)
-    message(STATUS "ARM toolchain path: ${arm_toolchain_path}")
-endif()
+# if (arm_toolchain_path)
+#     message(STATUS "ARM toolchain path: ${arm_toolchain_path}")
+# endif()
 
-if (arm_toolchain_path)
-    set(binary_paths "${arm_toolchain_path}")
-else ()
-    set(binary_path "/bin" "/usr/bin")
-endif ()
+# if (arm_toolchain_path)
+#     set(binary_paths "${arm_toolchain_path}")
+# else ()
+#     set(binary_path "/bin" "/usr/bin")
+# endif ()
 
 
 
 find_program(arm_eabi_c_compiler
     NAMES
         "arm-none-eabi-gcc"
-    PATHS
-        ${binary_paths}
-    NO_DEFAULT_PATH
 )
 
 find_program(arm_eabi_cxx_compiler
     NAMES
         "arm-none-eabi-g++"
-    PATHS
-        ${binary_paths}
-    NO_DEFAULT_PATH
 )
 
 find_program(arm_eabi_objcpy
     NAMES
         "arm-none-eabi-objcopy"
-    PATHS
-        ${binary_paths}
-    NO_DEFAULT_PATH
 )
 
 find_program(arm_eabi_objdump
     NAMES
         "arm-none-eabi-objdump"
-    PATHS
-        ${binary_paths}
-    NO_DEFAULT_PATH
 )
 
 find_program(arm_eabi_size
     NAMES
         "arm-none-eabi-size"
-    PATHS
-        ${binary_paths}
-    NO_DEFAULT_PATH
 )
 
 find_program(arm_eabi_gcc_ar
     NAMES
         "arm-none-eabi-gcc-ar"
-    PATHS
-        ${binary_paths}
-    NO_DEFAULT_PATH
 )
 
 find_program(arm_eabi_ranlib
     NAMES
         "arm-none-eabi-ranlib"
-    PATHS
-        ${binary_paths}
-    NO_DEFAULT_PATH
 )
 
 message (STATUS "ARM ASM compiler: ${arm_eabi_c_compiler}")

@@ -2,7 +2,11 @@ cmake_minimum_required(VERSION 3.9)
 
 if (DEFINED STM32_LIBRARIES_PATH)
     set(stm32_libraries_root_dir ${STM32_LIBRARIES_PATH})
+elseif (EXISTS $ENV{STM32_LIBRARIES_PATH})
+    file(TO_CMAKE_PATH $ENV{STM32_LIBRARIES_PATH} stm32_libraries_root_dir)
 endif()
+
+
 
 if (stm32_libraries_root_dir)
     message(STATUS "STM32 Libraries path: ${stm32_libraries_root_dir}")
