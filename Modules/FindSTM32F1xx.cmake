@@ -6,12 +6,13 @@ elseif (EXISTS $ENV{STM32_LIBRARIES_PATH})
     file(TO_CMAKE_PATH $ENV{STM32_LIBRARIES_PATH} stm32_libraries_root_dir)
 endif()
 
-
-
 if (stm32_libraries_root_dir)
     message(STATUS "STM32 Libraries path: ${stm32_libraries_root_dir}")
 else ()
-    message(FATAL_ERROR "STM32 Libraries can't be found. Please set environment variable: STM32_LIBRARIES_ROOT_DIR or pass path to cmake with -DSTM32_LIBRARIES_PATH")
+    include(../GitModules)
+    clone_module_via_branch("https://github.com/nematix/stm32f10x-stdperiph-lib.git" "stm32f1xx_stdperiph" ${CMAKE_CURRENT_BINARY_DIR} "master")
+    set (stm32_libraries_root_dir "${CMAKE_CURRENT_BINARY_DIR}/stm32f1xx_stdperiph")
+    # message(FATAL_ERROR "STM32 Libraries can't be found. Please set environment variable: STM32_LIBRARIES_ROOT_DIR or pass path to cmake with -DSTM32_LIBRARIES_PATH")
 endif ()
 
 string(TOLOWER "${mcu}" mcu)
@@ -59,7 +60,9 @@ file(GLOB_RECURSE stm32_device_support_sources
 )
 
 list(FILTER stm32_device_support_sources INCLUDE REGEX ".*CMSIS/.*/ST.*")
+message("${stm32_device_support_sources}")
 list(GET stm32_device_support_sources 0 device_support_element)
+message("component: ${device_support_element}")
 
 get_filename_component(stm32_device_support_path ${device_support_element} DIRECTORY)
 
@@ -67,6 +70,17 @@ file(GLOB_RECURSE cmsis_core_file
     ${stm32_libraries_root_dir}/**/core_cm3.h
 )
 
+if (NOT cmsis_core_file)
+    file(GLOB_RECURSE cmsis_core_file
+        ${stm32_libraries_root_dir}/**/core_cm3.h.old
+    )
+    get_filename_component(cmsis_core_file_path ${cmsis_core_file} DIRECTORY)
+    message("path ${cmsis_core_file} to ${cmsis_core_file_path}")
+    file (RENAME ${cmsis_core_file} ${cmsis_core_file_path}/core_cm3.h)
+    set (cmsis_core_file "${cmsis_core_file_path}/core_cm3.h")
+endif ()
+
+message ("cmsis core: ${cmsis_core_file}")
 get_filename_component(cmsis_core_file_path ${cmsis_core_file} DIRECTORY)
 
 file(GLOB sources
@@ -105,8 +119,10 @@ target_compile_options(stm32 PUBLIC
 
 set(hal_linker_flags "-mthumb;-mcpu=cortex-m3;-flto" CACHE INTERNAL "Linker flags")
 
+# wrap -Wl,--wrap=_malloc_r;-Wl,--wrap=_realloc_r;-Wl,--wrap=_free_r for malloc tracking
+
 target_link_options(stm32 PUBLIC
-    "${hal_linker_flags};-L${linker_scripts_directory};-T${linker_script};--specs=nano.specs;-Wl,--gc-sections;-Wl,--wrap=_malloc_r;-Wl,--wrap=_realloc_r;-Wl,--wrap=_free_r")
+    "${hal_linker_flags};-L${linker_scripts_directory};-T${linker_script};--specs=nano.specs;-Wl,--gc-sections")
 
 
 

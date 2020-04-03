@@ -79,11 +79,46 @@ function (fetch_module_via_tag_or_branch module_name module_path working_directo
     endif ()
 endfunction()
 
+function (clone_module_via_tag_or_branch link module_name module_path tag branch)
+    if (DEFINED ENV{NO_DEPS_UPDATE} OR DEFINED NO_DEPS_UPDATE)
+        return()
+    endif()
+    message (STATUS "Cloning module: ${link}, to path: ${module_path}/${module_name}")
+
+    find_package(Git QUIET)
+    if (NOT GIT_FOUND)
+        message (FATAL_ERROR "Can't find git")
+    endif ()
+
+    if (NOT EXISTS "${module_path}/${module_name}")
+        execute_command("git clone ${link} ${module_name}" "${module_path}")
+    endif()
+
+    if (NOT result EQUAL "0")
+        message ("Failure: ${output}")
+        message (FATAL_ERROR "Failure: ${error}")
+    endif ()
+
+    if (NOT ${branch} STREQUAL "")
+        execute_command("git checkout ${branch}" "${module_path}/${module_name}")
+    elseif (NOT ${tag} STREQUAL "")
+        execute_command("git checkout ${tag}" "${PROJECT_SOURCE_DIR}/${module_name}")
+    endif ()
+endfunction()
+
 function (fetch_module_via_tag module_name module_path working_directory tag)
     fetch_module_via_tag_or_branch(${module_name} ${module_path} ${working_directory} ${tag} "")
 endfunction()
 
 function (fetch_module_via_branch module_name module_path working_directory branch)
     fetch_module_via_tag_or_branch(${module_name} ${module_path} ${working_directory} "" ${branch})
+endfunction()
+
+function (clone_module_via_tag link module_name module_path tag)
+    clone_module_via_tag_or_branch(${link} ${module_name} ${module_path} ${tag} "")
+endfunction()
+
+function (clone_module_via_branch link module_name module_path branch)
+    clone_module_via_tag_or_branch(${link} ${module_name} ${module_path} "" ${branch})
 endfunction()
 
