@@ -109,7 +109,9 @@ set(hal_common_compilation_flags
 set(hal_cxx_compilation_flags "${hal_common_compilation_flags};-fno-rtti;-fno-exceptions;-fno-threadsafe-statics;-std=c++2a;-fno-use-cxa-atexit;-Wno-register;" CACHE INTERNAL "HAL CXX compilation flags")
 set(hal_c_compilation_flags "${hal_common_compilation_flags};-std=gnu99;-Wno-implicit-function-declaration" CACHE INTERNAL "HAL C compilation flags")
 
-target_compile_options(stm32 PUBLIC
+add_library(hal_flags INTERFACE)
+
+target_compile_options(hal_flags INTERFACE
     $<$<COMPILE_LANGUAGE:C>:${hal_c_compilation_flags}>
     $<$<COMPILE_LANGUAGE:CXX>:${hal_cxx_compilation_flags}>
     $<$<COMPILE_LANGUAGE:ASM>:${hal_c_compilation_flags}>
@@ -119,10 +121,7 @@ target_compile_options(stm32 PUBLIC
 
 set(hal_linker_flags "-mthumb;-mcpu=cortex-m3;-flto" CACHE INTERNAL "Linker flags")
 
-# wrap -Wl,--wrap=_malloc_r;-Wl,--wrap=_realloc_r;-Wl,--wrap=_free_r for malloc tracking
-
-target_link_options(stm32 PUBLIC
+target_link_options(hal_flags INTERFACE
     "${hal_linker_flags};-L${linker_scripts_directory};-T${linker_script};--specs=nano.specs;-Wl,--gc-sections")
 
-
-
+target_link_libraries(stm32 PUBLIC hal_flags)
