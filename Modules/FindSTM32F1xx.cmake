@@ -11,7 +11,7 @@ if (stm32_libraries_root_dir)
 else ()
     include(../GitModules)
     clone_module_via_branch("https://github.com/nematix/stm32f10x-stdperiph-lib.git" "stm32f1xx_stdperiph" ${CMAKE_CURRENT_BINARY_DIR} "master")
-    set (stm32_libraries_root_dir "${CMAKE_CURRENT_BINARY_DIR}/stm32f1xx_stdperiph")
+    set (stm32_libraries_root_dir "${CMAKE_CURRENT_BINARY_DIR}/stm32f1xx_stdperiph/Libraries")
     # message(FATAL_ERROR "STM32 Libraries can't be found. Please set environment variable: STM32_LIBRARIES_ROOT_DIR or pass path to cmake with -DSTM32_LIBRARIES_PATH")
 endif ()
 
@@ -59,12 +59,21 @@ file(GLOB_RECURSE stm32_device_support_sources
     ${stm32_libraries_root_dir}/**/system_stm32f10x.c
 )
 
+file (GLOB_RECURSE stm32_library_sources
+    ${stm32_libraries_root_dir}/**/stm32f10x_i2c.h
+    ${stm32_libraries_root_dir}/**/stm32f10x_rcc.h
+    ${stm32_libraries_root_dir}/**/stm32f10x_i2c.c
+    ${stm32_libraries_root_dir}/**/stm32f10x_rcc.c
+)
+
 list(FILTER stm32_device_support_sources INCLUDE REGEX ".*CMSIS/.*/ST.*")
 message("${stm32_device_support_sources}")
 list(GET stm32_device_support_sources 0 device_support_element)
-message("component: ${device_support_element}")
+list(GET stm32_library_sources 0 library_element)
+message("component: ${library_element}")
 
 get_filename_component(stm32_device_support_path ${device_support_element} DIRECTORY)
+get_filename_component(stm32_library_path ${library_element} DIRECTORY)
 
 file(GLOB_RECURSE cmsis_core_file
     ${stm32_libraries_root_dir}/**/core_cm3.h
@@ -80,13 +89,13 @@ if (NOT cmsis_core_file)
     set (cmsis_core_file "${cmsis_core_file_path}/core_cm3.h")
 endif ()
 
-message ("cmsis core: ${cmsis_core_file}")
 get_filename_component(cmsis_core_file_path ${cmsis_core_file} DIRECTORY)
 
 file(GLOB sources
     ${stm32_startup_file}
     ${cmsis_core_file}
     ${stm32_device_support_sources}
+    ${stm32_library_sources}
 )
 
 add_library(stm32)
@@ -100,6 +109,7 @@ target_sources(stm32 PRIVATE ${sources})
 target_include_directories(stm32 PUBLIC
     ${stm32_device_support_path}
     ${cmsis_core_file_path}
+    ${stm32_library_path}
 )
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
