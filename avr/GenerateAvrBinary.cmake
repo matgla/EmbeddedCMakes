@@ -5,7 +5,7 @@ function(generate_avr_binary target_name)
 
     add_custom_command(OUTPUT size
         COMMAND ${avr_size} --format=berkeley "${PROJECT_BINARY_DIR}/src/${target_name}.elf"
-        DEPENDS always_rebuild)
+        DEPENDS always_rebuild ${target_name})
 
     add_custom_command(
         OUTPUT always_rebuild
