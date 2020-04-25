@@ -62,8 +62,12 @@ file(GLOB_RECURSE stm32_device_support_sources
 file (GLOB_RECURSE stm32_library_sources
     ${stm32_libraries_root_dir}/**/stm32f10x_i2c.h
     ${stm32_libraries_root_dir}/**/stm32f10x_rcc.h
+    ${stm32_libraries_root_dir}/**/stm32f10x_dma.h
+    ${stm32_libraries_root_dir}/**/misc.h
     ${stm32_libraries_root_dir}/**/stm32f10x_i2c.c
     ${stm32_libraries_root_dir}/**/stm32f10x_rcc.c
+    ${stm32_libraries_root_dir}/**/stm32f10x_dma.c
+    ${stm32_libraries_root_dir}/**/misc.c
 )
 
 list(FILTER stm32_device_support_sources INCLUDE REGEX ".*CMSIS/.*/ST.*")
@@ -135,3 +139,5 @@ target_link_options(hal_flags INTERFACE
     "${hal_linker_flags};-L${linker_scripts_directory};-T${linker_script};--specs=nano.specs;-Wl,--gc-sections")
 
 target_link_libraries(stm32 PUBLIC hal_flags)
+
+add_definitions("-D_CLOCKS_PER_SEC_=1000000")
