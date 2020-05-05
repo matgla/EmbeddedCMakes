@@ -11,7 +11,9 @@ set(MCU ${unknown} CACHE STRING "Target MCU")
 set(MCU_FAMILY ${unknown} CACHE STRING "Target MCU family")
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_LIST_DIR}" CACHE STRING "CMAKE modules")
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_LIST_DIR}/Modules" CACHE STRING "CMAKE modules")
 
+message("AAAAAAAAAAAAAAAAAA: ${CMAKE_MODULE_PATH}")
 if (user_boards_path)
     set(board_file_glob_expression "${user_boards_path}/**/${BOARD}.cmake")
     message(STATUS "Searching board configuration: ${board_file_glob_expression}")
