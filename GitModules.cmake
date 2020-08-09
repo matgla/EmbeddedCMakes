@@ -86,6 +86,14 @@ function (clone_module_via_tag_or_branch link module_name module_path tag branch
     endif()
     message (STATUS "Cloning module: ${link}, to path: ${module_path}/${module_name}")
 
+    include(FetchContent)
+    FetchContent_Declare(
+        mspkg
+        GIT_REPOSITORY https://github.com/matgla/mspkg.git
+        GIT_TAG        master
+    )
+    FetchContent_MakeAvailable(mspkg)
+
     find_package(Git QUIET)
     if (NOT GIT_FOUND)
         message (FATAL_ERROR "Can't find git")
