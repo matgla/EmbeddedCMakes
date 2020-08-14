@@ -135,7 +135,7 @@ target_compile_options(hal_flags INTERFACE
 )
 
 set(hal_linker_flags "-mthumb;-mcpu=cortex-m3;-flto" CACHE INTERNAL "Linker flags")
-set(hal_exe_linker_flags "${hal_linker_flags};-L${linker_scripts_directory};-T${linker_script};--specs=nano.specs;-Wl,--gc-sections" CACHE INTERNAL "Linker flags")
+set(hal_exe_linker_flags "${hal_linker_flags};-L${linker_scripts_directory};-L${PROJECT_SOURCE_DIR};-T${linker_script};--specs=nano.specs;-Wl,--gc-sections" CACHE INTERNAL "Linker flags")
 
 target_link_options(hal_flags INTERFACE ${hal_exe_linker_flags})
 
