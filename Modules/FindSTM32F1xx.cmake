@@ -134,8 +134,17 @@ target_compile_options(hal_flags INTERFACE
     $<$<CONFIG:RELEASE>:-Os>
 )
 
-set(hal_linker_flags "-mthumb;-mcpu=cortex-m3;-flto" CACHE INTERNAL "Linker flags")
-set(hal_exe_linker_flags "${hal_linker_flags};-L${linker_scripts_directory};-L${PROJECT_SOURCE_DIR};-T${linker_script};--specs=nano.specs;-Wl,--gc-sections" CACHE INTERNAL "Linker flags")
+set(hal_linker_flags "-mthumb;-mcpu=cortex-m3;-flto;-lstdc++_nano" CACHE INTERNAL "Linker flags")
+
+
+set(hal_exe_linker_flags "${hal_linker_flags};-L${linker_scripts_directory};-L${PROJECT_SOURCE_DIR};-T${linker_script};-Wl,--gc-sections" CACHE INTERNAL "Linker flags")
+
+if (ENABLE_SEMIHOSTING)
+    set(hal_exe_linker_flags ${hal_exe_linker_flags} --specs=nano.specs)
+    set(hal_exe_linker_flags ${hal_exe_linker_flags} --specs=rdimon.specs)
+else ()
+    set(hal_exe_linker_flags ${hal_exe_linker_flags} --specs=nano.specs)
+endif ()
 
 target_link_options(hal_flags INTERFACE ${hal_exe_linker_flags})
 
