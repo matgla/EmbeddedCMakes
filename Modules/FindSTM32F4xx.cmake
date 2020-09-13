@@ -1,29 +1,27 @@
 cmake_minimum_required(VERSION 3.9)
 
-if (NOT stm32_libraries_root_dir)
-    include(FetchContent)
+include(FetchContent)
 
-    FetchContent_Declare(
-        stm32f4_hal
-        GIT_REPOSITORY https://github.com/STMicroelectronics/STM32CubeF4.git
-        GIT_TAG        v1.25.1
-        GIT_PROGRESS   TRUE
-    )
+FetchContent_Declare(
+    stm32f4_hal
+    GIT_REPOSITORY https://github.com/STMicroelectronics/STM32CubeF4.git
+    GIT_TAG        v1.25.1
+    GIT_PROGRESS   TRUE
+)
+
+FetchContent_GetProperties(stm32f4_hal
+    POPULATED stm32f4_hal_POPULATED
+)
+
+if (NOT stm32f4_hal_POPULATED)
+    FetchContent_Populate(stm32f4_hal)
 
     FetchContent_GetProperties(stm32f4_hal
         POPULATED stm32f4_hal_POPULATED
     )
-
-    if (NOT stm32f4_hal_POPULATED)
-        FetchContent_Populate(stm32f4_hal)
-
-        FetchContent_GetProperties(stm32f4_hal
-            POPULATED stm32f4_hal_POPULATED
-        )
-    endif ()
-
-    set (stm32_libraries_root_dir ${stm32f4_hal_SOURCE_DIR} CACHE INTERNAL "" FORCE)
 endif ()
+
+set (stm32_libraries_root_dir ${stm32f4_hal_SOURCE_DIR})
 
 string (TOLOWER "${mcu}" mcu)
 
