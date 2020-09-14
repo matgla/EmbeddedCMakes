@@ -46,9 +46,9 @@ message(STATUS "MCU Family: ${mcu_family}")
 message(STATUS "Vendor:     ${vendor}")
 message(STATUS "Arch:       ${arch}")
 
-if (${vendor} STREQUAL "STM32")
-    get_linker_script(linker_script linker_scripts_directory)
-endif()
+# if (${vendor} STREQUAL "STM32")
+#     get_linker_script(linker_script linker_scripts_directory)
+# endif()
 
 ## Load SDK ##
 if (${vendor} STREQUAL "STM32")
