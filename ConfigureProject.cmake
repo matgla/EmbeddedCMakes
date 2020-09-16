@@ -1,3 +1,18 @@
+function (search_inside board_configuration_directory key out)
+    file(GLOB_RECURSE jsons_in_board_configuration "${board_configuration_directory}/*.json")
+    foreach(file_path ${jsons_in_board_configuration})
+        get_filename_component(file ${file_path} NAME_WE)
+        string (TOLOWER ${file} file)
+        if (${key} STREQUAL ${file})
+            message (STATUS "Found board configuration: ${file_path}")
+            set (${out} ${file_path} PARENT_SCOPE)
+            return()
+    endif ()
+endforeach()
+
+
+endfunction()
+
 if (NOT boards_path)
     message(FATAL_ERROR "Path to boards configuration CMake files must be provided via boards_path. Please set board_path variable!")
 endif()
@@ -7,24 +22,22 @@ set (unknown "Unknown" CACHE STRING "Unknown Tag" FORCE)
 ##  DEDUCE TARGET ##
 
 set(BOARD ${unknown} CACHE STRING "Board name")
-set(MCU ${unknown} CACHE STRING "Target MCU")
-set(MCU_FAMILY ${unknown} CACHE STRING "Target MCU family")
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_LIST_DIR} ${CMAKE_CURRENT_LIST_DIR}/Modules PARENT_SCOPE)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_LIST_DIR} ${CMAKE_CURRENT_LIST_DIR}/Modules)
 
+string (TOLOWER ${BOARD} board_lowercased)
+
 if (user_boards_path)
-    set(board_file_glob_expression "${user_boards_path}/**/${BOARD}.cmake")
     message(STATUS "Searching board configuration: ${board_file_glob_expression}")
-    file(GLOB_RECURSE board_configuration_file "${board_file_glob_expression}")
+    search_inside(${user_boards_path} ${board_lowercased} board_configuration_file)
 endif ()
 
 if (board_configuration_file)
     message (STATUS "Found user board configuration: ${board_configuration_file}")
 else ()
-    set(board_file_glob_expression "${boards_path}/**/${BOARD}.cmake")
     message(STATUS "Searching board configuration: ${board_file_glob_expression}")
-    file(GLOB_RECURSE board_configuration_file "${board_file_glob_expression}")
+    search_inside(${boards_path} ${board_lowercased} board_configuration_file)
 endif ()
 
 if (NOT board_configuration_file)
@@ -38,17 +51,32 @@ else ()
     endif()
 endif()
 
-include (${board_configuration_file})
+find_package (Python COMPONENTS Interpreter)
 
-get_device_info(mcu mcu_family arch vendor)
+execute_process(
+    COMMAND ${Python_EXECUTABLE} ${CMAKE_CURRENT_LIST_DIR}/get_device_info.py
+    --input=${board_configuration_file}
+    --output=${CMAKE_CURRENT_BINARY_DIR}/device_configuration
+    RESULT_VARIABLE rc
+)
+
+get_filename_component(board_configuration_path ${board_configuration_file} DIRECTORY CACHE INTERNAL "" FORCE)
+set (board_configuration_file ${board_configuration_file} CACHE INTERNAL "" FORCE)
+
+set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS ${CMAKE_CURRENT_LIST_DIR}/get_device_info.py)
+
+if (${rc})
+    message (FATAL_ERROR "Can't get device info from: ${board_configuration_directory}")
+endif ()
+
+include (${CMAKE_CURRENT_BINARY_DIR}/device_configuration/device.cmake)
+
+set (mcu_family ${family} CACHE INTERNAL "" FORCE)
+
 message(STATUS "MCU:        ${mcu}")
 message(STATUS "MCU Family: ${mcu_family}")
 message(STATUS "Vendor:     ${vendor}")
 message(STATUS "Arch:       ${arch}")
-
-# if (${vendor} STREQUAL "STM32")
-#     get_linker_script(linker_script linker_scripts_directory)
-# endif()
 
 ## Load SDK ##
 if (${vendor} STREQUAL "STM32")
