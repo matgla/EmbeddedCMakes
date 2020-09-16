@@ -60,7 +60,9 @@ execute_process(
     RESULT_VARIABLE rc
 )
 
-get_filename_component(board_configuration_path ${board_configuration_file} DIRECTORY CACHE INTERNAL "" FORCE)
+get_filename_component(board_configuration_path ${board_configuration_file} DIRECTORY)
+set (board_configuration_path ${board_configuration_path} CACHE INTERNAL "" FORCE)
+
 set (board_configuration_file ${board_configuration_file} CACHE INTERNAL "" FORCE)
 
 set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS ${CMAKE_CURRENT_LIST_DIR}/get_device_info.py)
