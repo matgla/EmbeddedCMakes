@@ -12,7 +12,7 @@ args, rest = parser.parse_known_args()
 
 
 def main():
-    print ("Getting SOC informations")
+    print ("Getting SOC informations: ", args.input)
     with open(args.input) as config_file:
         config = json.loads(config_file.read())
     if not os.path.exists(args.output_directory):

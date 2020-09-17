@@ -26,25 +26,11 @@ set(BOARD ${unknown} CACHE STRING "Board name")
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_LIST_DIR} ${CMAKE_CURRENT_LIST_DIR}/Modules PARENT_SCOPE)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_LIST_DIR} ${CMAKE_CURRENT_LIST_DIR}/Modules)
 
-string (TOLOWER ${BOARD} board_lowercased)
-
-if (user_boards_path)
-    message(STATUS "Searching board configuration: ${board_file_glob_expression}")
-    search_inside(${user_boards_path} ${board_lowercased} board_configuration_file)
-endif ()
-
-if (board_configuration_file)
-    message (STATUS "Found user board configuration: ${board_configuration_file}")
+if (NOT soc_config_path)
+        message(FATAL_ERROR "SOC config not done")
 else ()
-    message(STATUS "Searching board configuration: ${board_file_glob_expression}")
-    search_inside(${boards_path} ${board_lowercased} board_configuration_file)
-endif ()
-
-if (NOT board_configuration_file)
-        message(FATAL_ERROR "Can't find configuration file: ${board_file_glob_expression}")
-else ()
-    message(STATUS "Found board configuration: ${board_configuration_file}")
-    set (device_configuration_file "${board_configuration_file}")
+    message(STATUS "Found board configuration: ${soc_config_path}")
+    set (device_configuration_file "${soc_config_path}")
     get_directory_property(has_parent PARENT_DIRECTORY)
     if (has_parent)
         set (device_configuration_file "${device_configuration_file}" PARENT_SCOPE)
@@ -55,15 +41,12 @@ find_package (Python COMPONENTS Interpreter)
 
 execute_process(
     COMMAND ${Python_EXECUTABLE} ${CMAKE_CURRENT_LIST_DIR}/get_device_info.py
-    --input=${board_configuration_file}
+    --input=${soc_config_path}
     --output=${CMAKE_CURRENT_BINARY_DIR}/device_configuration
     RESULT_VARIABLE rc
 )
 
-get_filename_component(board_configuration_path ${board_configuration_file} DIRECTORY)
-set (board_configuration_path ${board_configuration_path} CACHE INTERNAL "" FORCE)
-
-set (board_configuration_file ${board_configuration_file} CACHE INTERNAL "" FORCE)
+set (board_configuration_file ${soc_config_path} CACHE INTERNAL "" FORCE)
 
 set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS ${CMAKE_CURRENT_LIST_DIR}/get_device_info.py)
 
