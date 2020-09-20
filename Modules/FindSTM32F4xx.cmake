@@ -30,10 +30,11 @@ set (stm32f4_cmsis_directory "${cmsis_directory}/Device/ST/STM32F4xx/")
 
 set (startup_files_directory "${stm32_libraries_root_dir}/Drivers/CMSIS/Device/ST/STM32F4xx/Source/Templates/gcc")
 
+# TODO: How to select correct version?
 string(REGEX MATCH "stm32f4.."
     mcu_startup_filename ${mcu})
 
-set(mcu_startup_filename_path "startup_${mcu_startup_filename}xx.s")
+set(mcu_startup_filename_path "startup_${mcu_startup_filename}x*.s")
 
 file(GLOB_RECURSE stm32_startup_file ${startup_files_directory}/${mcu_startup_filename_path})
 
@@ -54,7 +55,7 @@ set (stm32_driver_directory "${stm32_libraries_root_dir}/Drivers/STM32F4xx_HAL_D
 
 file (GLOB stm32_driver_sources
     ${stm32_driver_directory}/Inc/*.h
-    ${stm32_driver_directory}/Src/*.c
+    # ${stm32_driver_directory}/Src/*.c
 )
 
 file(GLOB_RECURSE cmsis_core_file
@@ -68,7 +69,6 @@ target_sources(stm32
         ${stm32_cmsis_sources}
         ${stm32_driver_sources}
 )
-
 
 target_include_directories(stm32 PUBLIC
     ${stm32_driver_directory}/Inc/
@@ -111,6 +111,7 @@ target_link_libraries(stm32 PUBLIC hal_flags)
 
 string(TOUPPER "${mcu_startup_filename}" mcu_prefix_uppercased)
 
-target_compile_definitions(stm32 PUBLIC -D${mcu_prefix_uppercased}xx)
+# TODO: How to add correct definition?
+target_compile_definitions(stm32 PUBLIC -D${mcu_prefix_uppercased}xE)
 
-add_definitions(-D_CLOCKS_PER_SEC_=1000000 -D${mcu_prefix_uppercased}xx)
+add_definitions(-D_CLOCKS_PER_SEC_=1000000 -D${mcu_prefix_uppercased}xE)
