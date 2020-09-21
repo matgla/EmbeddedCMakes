@@ -31,12 +31,66 @@ set (stm32f4_cmsis_directory "${cmsis_directory}/Device/ST/STM32F4xx/")
 set (startup_files_directory "${stm32_libraries_root_dir}/Drivers/CMSIS/Device/ST/STM32F4xx/Source/Templates/gcc")
 
 # TODO: How to select correct version?
+string(REGEX MATCH "stm32f4...."
+    mcu_name_with_variant ${mcu})
+
 string(REGEX MATCH "stm32f4.."
     mcu_startup_filename ${mcu})
 
-set(mcu_startup_filename_path "startup_${mcu_startup_filename}x*.s")
+string(REGEX MATCH "..$"
+    mcu_variant ${mcu_name_with_variant})
 
-file(GLOB_RECURSE stm32_startup_file ${startup_files_directory}/${mcu_startup_filename_path})
+set(mcu_startup_filename_path "startup_${mcu_startup_filename}*.s")
+
+file(GLOB_RECURSE stm32_startup_files ${startup_files_directory}/${mcu_startup_filename_path})
+
+
+set (selected_variant "")
+foreach(startup_file ${stm32_startup_files})
+    get_filename_component(filename_without_extension ${startup_file} NAME_WE)
+    string(REGEX MATCH "..$"
+        file_variant ${filename_without_extension})
+
+    string(REGEX MATCH ".$"
+        mcu_variant_minor ${mcu_variant})
+
+    string(REGEX MATCH "^."
+        mcu_variant_major ${mcu_variant})
+
+    string(REGEX MATCH ".$"
+        file_variant_minor ${file_variant})
+
+    string(REGEX MATCH "^."
+        file_variant_major ${file_variant})
+
+    if (${file_variant_major} STREQUAL ${mcu_variant_major}
+        AND ${file_variant_minor} STREQUAL ${mcu_variant_minor})
+        set (selected_variant ${file_variant})
+        set (stm32_startup_file ${startup_file})
+        break()
+    endif ()
+
+    if (${file_variant_major} STREQUAL ${mcu_variant_major}
+        AND ${file_variant_minor} STREQUAL "x")
+        set (selected_variant ${file_variant})
+        set (stm32_startup_file ${startup_file})
+        break()
+    endif ()
+
+    if (${file_variant_major} STREQUAL "x"
+        AND ${file_variant_minor} STREQUAL "x")
+        set (selected_variant ${file_variant})
+        set (stm32_startup_file ${startup_file})
+        break()
+    endif ()
+
+    if (${file_variant_major} STREQUAL "x"
+        AND ${file_variant_minor} STREQUAL ${mcu_variant_minor})
+        set (selected_variant ${file_variant})
+        set (stm32_startup_file ${startup_file})
+        break()
+    endif ()
+endforeach()
 
 if (NOT EXISTS "${stm32_startup_file}")
     message(FATAL_ERROR "Can't find ${mcu_startup_filename} inside: ${stm32_libraries_root_dir}")
@@ -111,7 +165,22 @@ target_link_libraries(stm32 PUBLIC hal_flags)
 
 string(TOUPPER "${mcu_startup_filename}" mcu_prefix_uppercased)
 
-# TODO: How to add correct definition?
-target_compile_definitions(stm32 PUBLIC -D${mcu_prefix_uppercased}xE)
+string(REGEX MATCH ".$"
+    selected_variant_minor ${selected_variant})
 
-add_definitions(-D_CLOCKS_PER_SEC_=1000000 -D${mcu_prefix_uppercased}xE)
+string(REGEX MATCH "^."
+    selected_variant_major ${selected_variant})
+
+if (NOT ${selected_variant_minor} STREQUAL "x")
+    string (TOUPPER ${selected_variant_minor} selected_variant_minor)
+endif ()
+
+if (NOT ${selected_variant_major} STREQUAL "x")
+    string (TOUPPER ${selected_variant_major} selected_variant_major)
+endif ()
+
+set (mcu_definition ${mcu_prefix_uppercased}${selected_variant_major}${selected_variant_minor})
+
+target_compile_definitions(stm32 PUBLIC -D${mcu_definition})
+
+add_definitions(-D_CLOCKS_PER_SEC_=1000000 -D${mcu_definition})
