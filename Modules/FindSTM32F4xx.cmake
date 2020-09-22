@@ -109,7 +109,14 @@ set (stm32_driver_directory "${stm32_libraries_root_dir}/Drivers/STM32F4xx_HAL_D
 
 file (GLOB stm32_driver_sources
     ${stm32_driver_directory}/Inc/*.h
-    # ${stm32_driver_directory}/Src/*.c
+    ${stm32_driver_directory}/Src/stm32f4xx_hal_rcc.c
+    ${stm32_driver_directory}/Src/stm32f4xx_hal_gpio.c
+    ${stm32_driver_directory}/Src/stm32f4xx_hal_usart.c
+    ${stm32_driver_directory}/Src/stm32f4xx_hal.c
+    ${stm32_driver_directory}/Src/stm32f4xx_hal_nvic.c
+    ${stm32_driver_directory}/Src/stm32f4xx_hal_cortex.c
+    ${stm32_driver_directory}/Src/stm32f4xx_hal_pwr_ex.c
+    ${stm32_driver_directory}/Src/stm32f4xx_hal_uart.c
 )
 
 file(GLOB_RECURSE cmsis_core_file
