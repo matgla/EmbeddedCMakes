@@ -117,6 +117,9 @@ file (GLOB stm32_driver_sources
     ${stm32_driver_directory}/Src/stm32f4xx_hal_cortex.c
     ${stm32_driver_directory}/Src/stm32f4xx_hal_pwr_ex.c
     ${stm32_driver_directory}/Src/stm32f4xx_hal_uart.c
+    ${stm32_driver_directory}/Src/stm32f4xx_hal_tim.c
+    ${stm32_driver_directory}/Src/stm32f4xx_hal_tim_ex.c
+    ${stm32_driver_directory}/Src/stm32f4xx_hal_rcc_ex.c
 )
 
 file(GLOB_RECURSE cmsis_core_file
@@ -190,4 +193,4 @@ set (mcu_definition ${mcu_prefix_uppercased}${selected_variant_major}${selected_
 
 target_compile_definitions(stm32 PUBLIC -D${mcu_definition})
 
-add_definitions(-D_CLOCKS_PER_SEC_=1000000 -D${mcu_definition})
+add_definitions(-D_CLOCKS_PER_SEC_=1000000 -D${mcu_definition} -DUSE_HAL_DRIVER)
