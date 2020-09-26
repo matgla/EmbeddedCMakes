@@ -26,6 +26,7 @@ set(BOARD ${unknown} CACHE STRING "Board name")
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_LIST_DIR} ${CMAKE_CURRENT_LIST_DIR}/Modules PARENT_SCOPE)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_LIST_DIR} ${CMAKE_CURRENT_LIST_DIR}/Modules)
 
+
 if (NOT soc_config_path)
         message(FATAL_ERROR "SOC config not done")
 else ()

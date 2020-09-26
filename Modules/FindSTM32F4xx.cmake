@@ -144,7 +144,7 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
 
 set(hal_common_compilation_flags
     "-mthumb;-mno-thumb-interwork;-mfpu=vfp;-mfloat-abi=soft;-mcpu=cortex-m4;-fno-builtin;-fdata-sections;-ffunction-sections;")
-set(hal_cxx_compilation_flags "${hal_common_compilation_flags};-fno-rtti;-fno-exceptions;-fno-threadsafe-statics;-std=c++2a;-fno-use-cxa-atexit;-Wno-register;" CACHE INTERNAL "HAL CXX compilation flags")
+set(hal_cxx_compilation_flags "${hal_common_compilation_flags};-fno-rtti;-fno-exceptions;-fno-threadsafe-statics;-std=c++2a;-fno-use-cxa-atexit;-Wno-register;-Wno-volatile;" CACHE INTERNAL "HAL CXX compilation flags")
 set(hal_c_compilation_flags "${hal_common_compilation_flags};-std=gnu99;-Wno-implicit-function-declaration" CACHE INTERNAL "HAL C compilation flags")
 
 add_library(hal_flags INTERFACE)
