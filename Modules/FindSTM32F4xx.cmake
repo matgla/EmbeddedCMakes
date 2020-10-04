@@ -120,6 +120,7 @@ file (GLOB stm32_driver_sources
     ${stm32_driver_directory}/Src/stm32f4xx_hal_tim.c
     ${stm32_driver_directory}/Src/stm32f4xx_hal_tim_ex.c
     ${stm32_driver_directory}/Src/stm32f4xx_hal_rcc_ex.c
+    ${stm32_driver_directory}/Src/stm32f4xx_hal_spi.c
 )
 
 file(GLOB_RECURSE cmsis_core_file
