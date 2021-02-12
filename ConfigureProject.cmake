@@ -64,19 +64,11 @@ message(STATUS "Vendor:     ${vendor}")
 message(STATUS "Arch:       ${arch}")
 
 ## Load SDK ##
-if (${vendor} STREQUAL "STM32")
-    message (STATUS "Loading STM32 toolchain")
-    include(STM32)
-    include(Modules/Platform/STM32)
-    set (path_to_platform_file "Modules/Platform/STM32" CACHE INTERNAL "")
-endif()
 
-if (${vendor} STREQUAL "ATMEL")
-    message (STATUS "Loading AVR toolchain")
-    include(AVR)
-    include(Modules/Platform/AVR)
-    set (path_to_platform_file "Modules/Platform/AVR" CACHE INTERNAL "")
-endif()
+message (STATUS "Loading ${vendor} toolchain")
+include(${vendor})
+include(Modules/Platform/${vendor})
+set (path_to_platform_file "Modules/Platform/${vendor}" CACHE INTERNAL "")
 
 ## Export configuration ##
 
