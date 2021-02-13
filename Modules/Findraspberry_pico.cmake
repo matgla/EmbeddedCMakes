@@ -35,6 +35,10 @@ endif ()
 
 set (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${pico_sdk_SOURCE_DIR})
 
-include (pico_sdk_init) 
+include (cmake/preload/toolchains/pico_arm_gcc)
 
+include (pico_sdk_init) 
 pico_sdk_init()
+
+add_library(hal_flags INTERFACE) 
+
