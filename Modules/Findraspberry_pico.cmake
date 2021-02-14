@@ -43,11 +43,12 @@ set (hal_common_compilation_flags
 "-mthumb -march=armv6-m -mcpu=cortex-m0plus -fno-builtin -fdata-sections -ffunction-sections"
 )
 
-set (hal_cxx_compilation_flags ${hal_common_compilation_flags} 
-    -fno-rtti -fno-exceptions
+set (hal_cxx_compilation_flags "${hal_common_compilation_flags} -fno-rtti -fno-exceptions"
 )
 
-set (CMAKE_CXX_FLAGS ${hal_common_compilation_flags})
+set (CMAKE_CXX_FLAGS ${hal_cxx_compilation_flags} CACHE STRING "CXX Flags" FORCE)
+set (CMAKE_C_FLAGS ${hal_common_compilation_flags} CACHE STRING "C Flags" FORCE)
+set (CMAKE_ASM_FLAGS ${hal_common_compilation_flags} CACHE STRING "ASM Flags" FORCE) 
 
 include (pico_sdk_init) 
 pico_sdk_init()
