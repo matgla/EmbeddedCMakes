@@ -78,6 +78,8 @@ set(CMAKE_C_COMPILER_AR         ${arm_eabi_gcc_ar})
 set(CMAKE_RANLIB                ${arm_eabi_ranlib})
 set(CMAKE_C_COMPILER_RANLIB     ${arm_eabi_ranlib})
 
+#set(CMAKE_C_COMPILER_FORCED TRUE) 
+#set(CMAKE_CXX_COMPILER_FORCED TRUE)
 
 find_package(PackageHandleStandardArgs)
 find_package_handle_standard_args(ArmToolchain DEFAULT_MSG
