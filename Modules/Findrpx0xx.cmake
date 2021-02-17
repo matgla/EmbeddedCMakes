@@ -55,3 +55,14 @@ pico_sdk_init()
 
 add_library(hal_flags INTERFACE) 
 
+set (hal_linker_flags "-mthumb -mcpu=cortex-m0plus -flto -lstdc++_nano" CACHE INTERNAL "Linker flags")
+
+set(hal_exe_linker_flags
+    "${hal_linker_flags} -L${linker_scripts_directory} -L${PROJECT_SOURCE_DIR} -L${board_configuration_path} -T${linker_script} -Wl,--gc-sections" CACHE INTERNAL "Linker flags")
+
+target_link_options(hal_flags INTERFACE ${hal_exe_linker_flags})
+
+target_link_libraries(pico_standard_link INTERFACE hal_flags)
+
+#set (CMAKE_EXE_LINKER_FLAGS ${hal_exe_linker_flags} CACHE STRING "Linker flags" FORCE)
+
