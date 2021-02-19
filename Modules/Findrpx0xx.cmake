@@ -58,7 +58,7 @@ add_library(hal_flags INTERFACE)
 set(hal_linker_flags "-mthumb;-mcpu=cortex-m0plus;-flto" CACHE INTERNAL "Linker flags")
 
 set(hal_exe_linker_flags
-    "${hal_linker_flags};-L${linker_scripts_directory};-L${PROJECT_SOURCE_DIR};-L${board_configuration_path}" CACHE INTERNAL "Linker flags"
+    "${hal_linker_flags};-L${linker_scripts_directory};-L${PROJECT_SOURCE_DIR};-L${hal_board_configuration_path}" CACHE INTERNAL "Linker flags"
     FORCE)
 
 target_link_options(hal_flags INTERFACE ${hal_exe_linker_flags})
