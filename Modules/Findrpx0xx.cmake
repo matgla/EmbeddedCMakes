@@ -63,7 +63,6 @@ set(hal_exe_linker_flags
 
 target_link_options(hal_flags INTERFACE ${hal_exe_linker_flags})
 
-target_link_libraries(pico_standard_link INTERFACE hal_flags)
 
 #set (CMAKE_EXE_LINKER_FLAGS ${hal_exe_linker_flags} CACHE STRING "Linker flags" FORCE)
 
