@@ -40,7 +40,7 @@ set (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${pico_sdk_SOURCE_DIR})
 #set (CMAKE_CXX_FLAGS_INIT ${CMAKE_CXX_FLAGS_INIT} -std=gnu++20)
 
 set (hal_common_compilation_flags 
-"-mthumb -march=armv6-m -mcpu=cortex-m0plus -fno-builtin -fdata-sections -ffunction-sections"
+"-mthumb -O0 -march=armv6-m -mcpu=cortex-m0plus -fno-builtin -fdata-sections -ffunction-sections"
 )
 
 set (hal_cxx_compilation_flags "${hal_common_compilation_flags} -fno-rtti -fno-exceptions"
