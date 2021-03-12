@@ -58,11 +58,11 @@ include (${CMAKE_CURRENT_BINARY_DIR}/device_configuration/device.cmake)
 
 set (mcu_family ${family} CACHE INTERNAL "" FORCE)
 
-message(STATUS "MCU:        ${mcu}")
-message(STATUS "MCU Family: ${mcu_family}")
-message(STATUS "Vendor:     ${vendor}")
-message(STATUS "Arch:       ${arch}")
-
+message(STATUS "MCU:           ${mcu}")
+message(STATUS "MCU Family:    ${mcu_family}")
+message(STATUS "Vendor:        ${vendor}")
+message(STATUS "Arch:          ${arch}")
+message(STATUS "Arch Version : ${arch_version}")
 ## Load SDK ##
 
 message (STATUS "Loading ${vendor} toolchain")
@@ -76,7 +76,9 @@ get_directory_property(has_parent PARENT_DIRECTORY)
 if (has_parent)
     set(mcu "${mcu}" CACHE STRING "target MCU")
     set(arch "${arch}" CACHE STRING "target architecture")
+    set(arch_version "${arch_version}" CACHE STRING "target architecture version")
     set(vendor "${vendor}" CACHE STRING "target vendor")
     set(linker_script "${linker_script}" CACHE STRING "target linker script")
+    
 endif ()
 
