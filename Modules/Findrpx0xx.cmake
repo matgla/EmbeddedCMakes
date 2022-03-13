@@ -14,7 +14,7 @@ else ()
 		GIT_PROGRESS   TRUE
 		USES_TERMINAL_DOWNLOAD TRUE
 		FETCHCONTENT_QUIET FALSE
-		GIT_SUBMODULES ""
+		# GIT_SUBMODULES ""
 	)
 
 	FetchContent_GetProperties(pico_sdk 
