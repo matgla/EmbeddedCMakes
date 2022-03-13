@@ -10,11 +10,11 @@ else ()
 	FetchContent_Declare(
 		pico_sdk 
 		GIT_REPOSITORY https://github.com/raspberrypi/pico-sdk.git
-		GIT_TAG        1.0.1
+		GIT_TAG        1.3.0
 		GIT_PROGRESS   TRUE
 		USES_TERMINAL_DOWNLOAD TRUE
 		FETCHCONTENT_QUIET FALSE
-		# GIT_SUBMODULES ""
+		GIT_SUBMODULES "tinyusb"
 	)
 
 	FetchContent_GetProperties(pico_sdk 
@@ -55,10 +55,10 @@ pico_sdk_init()
 
 add_library(hal_flags INTERFACE) 
 
-set(hal_linker_flags "-mthumb;-mcpu=cortex-m0plus;-flto" CACHE INTERNAL "Linker flags")
+set(hal_linker_flags "-mthumb;-mcpu=cortex-m0plus;-flto;-lstdc++_nano" CACHE INTERNAL "Linker flags")
 
 set(hal_exe_linker_flags
-    "${hal_linker_flags};-L${linker_scripts_directory};-L${PROJECT_SOURCE_DIR};-L${hal_board_configuration_path}" CACHE INTERNAL "Linker flags"
+    "${hal_linker_flags};-L${linker_scripts_directory};-L${PROJECT_SOURCE_DIR};-L${hal_board_configuration_path};--specs=nano.specs" CACHE INTERNAL "Linker flags"
     FORCE)
 
 target_link_options(hal_flags INTERFACE ${hal_exe_linker_flags})
