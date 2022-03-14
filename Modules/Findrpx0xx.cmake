@@ -61,6 +61,7 @@ set(hal_exe_linker_flags
     "${hal_linker_flags};-L${linker_scripts_directory};-L${PROJECT_SOURCE_DIR};-L${hal_board_configuration_path};--specs=nano.specs" CACHE INTERNAL "Linker flags"
     FORCE)
 
+target_link_libraries(hal_flags INTERFACE pico_stdlib)
 target_link_options(hal_flags INTERFACE ${hal_exe_linker_flags})
 
 
