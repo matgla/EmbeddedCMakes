@@ -6,13 +6,15 @@
 
 function (setup_virtualenv venv_name requirements working_directory)
     file (GLOB virtualenv_file_stamp ${working_directory}/virtualenv_file.stamp)
+    file (MAKE_DIRECTORY ${working_directory})
     if (NOT virtualenv_file_stamp)
         find_package(PythonInterp REQUIRED)
         find_program(venv_exec virtualenv)
         if (NOT venv_exec)
-            message(FATAL_ERROR, "Virtualenv not found in PATH")
+            message(FATAL_ERROR,"Virtualenv not found in PATH")
         endif ()
 
+        message (STATUS "${venv_exec} -p python3 ${venv_name}")
         execute_process(
             COMMAND ${venv_exec} -p python3 ${venv_name}
             WORKING_DIRECTORY ${working_directory}
